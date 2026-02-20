@@ -1,0 +1,21 @@
+version: "3.1"
+nlu:
+- intent: greet
+  examples: |
+    - hi
+    - hello
+    - hey
+- intent: mood_low
+  examples: |
+    - I feel sad
+    - I am depressed
+    - I feel anxious
+- intent: panic
+  examples: |
+    - I want to kill myself
+    - I cannot go on
+    - I feel hopeless
+- intent: goodbye
+  examples: |
+    - bye
+    - good night
