@@ -1,0 +1,18 @@
+version: "3.1"
+intents:
+  - greet
+  - mood_low
+  - panic
+  - goodbye
+responses:
+  utter_greet:
+    - text: "Hi, I am here to support you."
+  utter_support:
+    - text: "I hear you. Let's take one slow breath together."
+  utter_emergency:
+    - text: "If you are in danger, please contact local emergency services immediately."
+  utter_goodbye:
+    - text: "Take care. I'm here whenever you need support."
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
