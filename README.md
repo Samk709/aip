@@ -153,3 +153,5 @@ See `docs/security/secrets_and_ops.md` for secure deployment checklist.
 - Do a hard refresh: `Ctrl + F5` (Windows)
 - Ensure you pulled latest commits: `git pull`
 - Open Developer Tools > Network > Disable cache (while DevTools is open)
+- If using Docker, rebuild fresh: `docker compose down && docker compose build --no-cache && docker compose up`
+- Ensure old Flask process is stopped before restart (same port can serve old process).
