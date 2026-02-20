@@ -33,7 +33,9 @@ source .venv/bin/activate
 ### Step C: Install dependencies
 ```bash
 pip install -r requirements.txt
-# Optional (for local HF/OpenCV/librosa/torch features):
+# Optional Postgres driver (if using PostgreSQL instead of SQLite):
+# pip install -r requirements-db.txt
+# Optional heavy ML stack (HF/OpenCV/librosa/torch features):
 # pip install -r requirements-ml.txt
 ```
 
@@ -117,6 +119,7 @@ RASA_WEBHOOK_URL=http://localhost:5005/webhooks/rest/webhook
 Follow sections 1A–1E exactly. If it fails, common reasons are:
 - missing Python 3.10+
 - dependency install failed
+- Python 3.13 can fail on some optional pinned wheels (use Python 3.10/3.11)
 - port 5000/5432 in use
 - `.env` misconfiguration
 - merge conflict markers still present in files (`<<<<<<<`, `=======`, `>>>>>>>`)
