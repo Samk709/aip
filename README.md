@@ -117,6 +117,7 @@ Follow sections 1A–1E exactly. If it fails, common reasons are:
 - dependency install failed
 - port 5000/5432 in use
 - `.env` misconfiguration
+- merge conflict markers still present in files (`<<<<<<<`, `=======`, `>>>>>>>`)
 
 Once backend starts, open `http://localhost:5000` and test auth + assess + multimodal + chat from the UI.
 
