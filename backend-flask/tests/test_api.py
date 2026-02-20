@@ -66,6 +66,9 @@ def test_auth_and_assess_chat_flow():
     media_resp = client.post('/api/media/analyze', headers=headers, json={})
     assert media_resp.status_code == 200
 
+    frame_resp = client.post('/api/media/analyze-frame', headers=headers, json={'frame': 'invalid'})
+    assert frame_resp.status_code == 200
+
     media_trained = client.post('/api/media/predict-trained', headers=headers, json={
         'face_features': [0.2] * 8,
         'voice_features': [0.3] * 8,

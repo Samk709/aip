@@ -12,7 +12,7 @@ from ..services.multimodal import normalize_face_emotion, estimate_voice_stress,
 from ..services.rasa_adapter import query_rasa
 from ..services.gpt_adapter import query_gpt
 from ..services.moderation import local_moderation_flags, openai_moderation
-from ..services.media_pipeline import analyze_face_image, analyze_voice_audio
+from ..services.media_pipeline import analyze_face_image, analyze_voice_audio, analyze_face_frame_base64
 from ..services.media_models import predict_face_emotion_from_embedding, predict_voice_stress_from_features
 from ..services.escalation import create_moderation_audit
 
@@ -208,6 +208,18 @@ def media_analyze():
     voice = analyze_voice_audio(audio_path) if audio_path else {"provider": "none", "stress": 0.5}
     return jsonify({"face": face, "voice": voice})
 
+
+
+
+@api_bp.post("/media/analyze-frame")
+@require_auth
+def media_analyze_frame():
+    data = request.get_json(force=True)
+    frame = data.get("frame", "")
+    if not frame:
+        return jsonify({"error": "frame is required"}), 400
+    face = analyze_face_frame_base64(frame)
+    return jsonify({"face": face})
 
 @api_bp.post("/media/predict-trained")
 @require_auth

@@ -93,6 +93,7 @@ RASA_WEBHOOK_URL=http://localhost:5005/webhooks/rest/webhook
 - Multimodal:
   - `POST /api/multimodal/analyze`
   - `POST /api/media/analyze`
+  - `POST /api/media/analyze-frame`
   - `POST /api/media/predict-trained`
 - App behavior:
   - `POST /api/mood`
@@ -140,3 +141,8 @@ Then call:
 
 ## 8) Secrets and Ops doc
 See `docs/security/secrets_and_ops.md` for secure deployment checklist.
+
+
+## 9) Webcam emotion detection in UI
+- Login first, open the Face Emotion card, click **Start Camera**, then **Detect Emotion**.
+- Allow camera permission in browser when prompted.

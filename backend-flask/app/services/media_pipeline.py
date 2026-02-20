@@ -1,4 +1,13 @@
 from importlib.util import find_spec
+import base64
+
+
+def _emotion_from_brightness(brightness: float) -> str:
+    if brightness > 0.6:
+        return "happy"
+    if brightness < 0.35:
+        return "sad"
+    return "neutral"
 
 
 def analyze_face_image(image_path: str) -> dict:
@@ -13,15 +22,30 @@ def analyze_face_image(image_path: str) -> dict:
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     brightness = float(gray.mean()) / 255.0
-    # Simplistic proxy; replace with real FER model.
-    if brightness > 0.6:
-        emotion = "happy"
-    elif brightness < 0.35:
-        emotion = "sad"
-    else:
-        emotion = "neutral"
+    return {"provider": "opencv", "emotion": _emotion_from_brightness(brightness), "brightness": round(brightness, 3)}
 
-    return {"provider": "opencv", "emotion": emotion, "brightness": round(brightness, 3)}
+
+def analyze_face_frame_base64(frame_data_url: str) -> dict:
+    if find_spec("cv2") is None or find_spec("numpy") is None:
+        return {"provider": "unavailable", "emotion": "neutral", "note": "opencv/numpy not installed"}
+
+    import cv2
+    import numpy as np
+
+    try:
+        encoded = frame_data_url.split(",", 1)[1] if "," in frame_data_url else frame_data_url
+        raw = base64.b64decode(encoded)
+        arr = np.frombuffer(raw, dtype=np.uint8)
+        img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
+    except Exception:
+        return {"provider": "opencv", "emotion": "neutral", "note": "invalid frame payload"}
+
+    if img is None:
+        return {"provider": "opencv", "emotion": "neutral", "note": "frame decode failed"}
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    brightness = float(gray.mean()) / 255.0
+    return {"provider": "opencv", "emotion": _emotion_from_brightness(brightness), "brightness": round(brightness, 3)}
 
 
 def analyze_voice_audio(audio_path: str) -> dict:
