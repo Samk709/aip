@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MindCare AI</title>
-  <link rel="stylesheet" href="/static/css/style.css" />
+  <title>MindCare AI • Pro UI</title>
+  <link rel="stylesheet" href="/static/css/style.css?v={{ asset_version }}" />
 </head>
 <body>
   <div id="toastContainer" class="toast-container"></div>
 
   <header class="hero">
     <div>
-      <h1>MindCare AI Assistant</h1>
+      <h1>MindCare AI Assistant <span class="version-tag">PRO UI</span></h1>
       <p>Risk prediction • Mood tracking • Emotion insights • Smart support chatbot</p>
     </div>
     <span id="statusPill" class="pill">Not logged in</span>
@@ -80,6 +80,6 @@
     </section>
   </main>
 
-  <script src="/static/js/app.js"></script>
+  <script src="/static/js/app.js?v={{ asset_version }}"></script>
 </body>
 </html>

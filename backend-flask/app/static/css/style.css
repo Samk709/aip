@@ -23,3 +23,5 @@ pre { background:#0b1220; border:1px solid #1f2937; border-radius:12px; padding:
 canvas { display:none; }
 .toast-container { position:fixed; top:16px; right:16px; z-index:50; display:flex; flex-direction:column; gap:8px; }
 .toast { background:#111827; border:1px solid #334155; padding:10px 12px; border-radius:10px; color:#e2e8f0; }
+
+.version-tag { font-size:12px; vertical-align:middle; background:#0ea5e9; color:#001018; padding:4px 8px; border-radius:999px; margin-left:8px; }

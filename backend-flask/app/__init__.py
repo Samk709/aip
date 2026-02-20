@@ -1,4 +1,5 @@
 from flask import Flask
+import time
 from .config import Config
 from .db.extensions import db
 from .api.routes import api_bp
@@ -15,7 +16,7 @@ def create_app() -> Flask:
     @app.route("/")
     def home():
         from flask import render_template
-        return render_template("index.html")
+        return render_template("index.html", asset_version=int(time.time()))
 
     with app.app_context():
         init_models()

@@ -146,3 +146,10 @@ See `docs/security/secrets_and_ops.md` for secure deployment checklist.
 ## 9) Webcam emotion detection in UI
 - Login first, open the Face Emotion card, click **Start Camera**, then **Detect Emotion**.
 - Allow camera permission in browser when prompted.
+
+
+## 10) If UI changes are not visible in browser
+- Stop server and run again: `python run.py`
+- Do a hard refresh: `Ctrl + F5` (Windows)
+- Ensure you pulled latest commits: `git pull`
+- Open Developer Tools > Network > Disable cache (while DevTools is open)
