@@ -1,0 +1,26 @@
+version: '3.9'
+services:
+  web:
+    build: ./backend-flask
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend-flask/.env.example
+    volumes:
+      - ./backend-flask:/app
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mental_health
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
