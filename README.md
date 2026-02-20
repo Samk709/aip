@@ -33,6 +33,8 @@ source .venv/bin/activate
 ### Step C: Install dependencies
 ```bash
 pip install -r requirements.txt
+# Optional (for local HF/OpenCV/librosa/torch features):
+# pip install -r requirements-ml.txt
 ```
 
 ### Step D: Environment setup
