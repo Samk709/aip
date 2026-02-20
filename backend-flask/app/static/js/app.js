@@ -109,3 +109,10 @@ async function chat() {
   addBubble(data.reply || '...', 'bot');
   showToast(`Bot provider: ${data.provider || 'local'}`);
 }
+
+
+(function startupChecks(){
+  if (!location.href.startsWith('http://localhost:5000') && !location.href.startsWith('http://127.0.0.1:5000')) {
+    showToast('Open exactly http://localhost:5000 (not Live Server/file preview)');
+  }
+})();

@@ -155,3 +155,9 @@ See `docs/security/secrets_and_ops.md` for secure deployment checklist.
 - Open Developer Tools > Network > Disable cache (while DevTools is open)
 - If using Docker, rebuild fresh: `docker compose down && docker compose build --no-cache && docker compose up`
 - Ensure old Flask process is stopped before restart (same port can serve old process).
+
+
+## 11) Windows quick-fix (your exact errors)
+- If you see `docker is not recognized`, **skip Docker** and run only Flask (`python run.py`). Docker is optional.
+- Open URL exactly: `http://localhost:5000` (do not open `index.html` directly and do not use VS Code Live Server for this template).
+- In Task Manager/terminal, stop old Python servers, then run fresh server again.
