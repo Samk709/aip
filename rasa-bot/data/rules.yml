@@ -1,0 +1,18 @@
+version: "3.1"
+rules:
+- rule: respond to greet
+  steps:
+    - intent: greet
+    - action: utter_greet
+- rule: support low mood
+  steps:
+    - intent: mood_low
+    - action: utter_support
+- rule: crisis response
+  steps:
+    - intent: panic
+    - action: utter_emergency
+- rule: goodbye
+  steps:
+    - intent: goodbye
+    - action: utter_goodbye
