@@ -1,0 +1,7 @@
+# Optional heavy ML/media stack (install only when needed)
+# pip install -r requirements.txt -r requirements-ml.txt
+numpy==2.0.2
+librosa==0.10.2.post1
+opencv-python==4.10.0.84
+transformers==4.44.2
+torch==2.4.1
