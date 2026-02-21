@@ -161,3 +161,16 @@ See `docs/security/secrets_and_ops.md` for secure deployment checklist.
 - If you see `docker is not recognized`, **skip Docker** and run only Flask (`python run.py`). Docker is optional.
 - Open URL exactly: `http://localhost:5000` (do not open `index.html` directly and do not use VS Code Live Server for this template).
 - In Task Manager/terminal, stop old Python servers, then run fresh server again.
+
+
+## 12) If still old UI appears (definitive check)
+Run these in terminal:
+```bash
+cd backend-flask
+python run.py
+```
+Then open:
+- `http://localhost:5000/api/build-info`
+
+You must see build value: `PRO-UI-2026-02-21`.
+If not, you are running a different folder/old process.

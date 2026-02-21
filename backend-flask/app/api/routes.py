@@ -1,4 +1,5 @@
 from functools import wraps
+from pathlib import Path
 from flask import Blueprint, jsonify, request, current_app
 from ..db.extensions import db
 from ..models.entities import User, Assessment, MoodLog, ChatMessage, RiskEvent, DigitalTwinState, EmotionEvent, ModerationAudit
@@ -17,6 +18,7 @@ from ..services.media_models import predict_face_emotion_from_embedding, predict
 from ..services.escalation import create_moderation_audit
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
+BUILD_MARKER = "PRO-UI-2026-02-21"
 
 
 def _extract_token() -> str | None:
@@ -61,6 +63,14 @@ def require_role(allowed_roles: set[str]):
 @api_bp.get("/health")
 def health():
     return jsonify({"status": "ok"})
+
+
+@api_bp.get("/build-info")
+def build_info():
+    return jsonify({
+        "build": BUILD_MARKER,
+        "cwd": str(Path.cwd()),
+    })
 
 
 @api_bp.get("/integrations/status")
