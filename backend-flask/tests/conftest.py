@@ -8,5 +8,5 @@ if str(APP_ROOT) not in sys.path:
     sys.path.insert(0, str(APP_ROOT))
 
 
-os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
-os.environ.setdefault("HF_MODEL_NAME", "")
+os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+os.environ["HF_MODEL_NAME"] = ""
