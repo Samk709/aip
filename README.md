@@ -182,3 +182,31 @@ cd backend-flask
 PORT=5001 python run.py
 ```
 Then open `http://localhost:5001`.
+
+## 13) GitHub says "Resolve conflicts" (exact fix steps)
+If PR UI shows conflict markers like `<<<<<<<`, `=======`, `>>>>>>>`, do this locally and push:
+
+```bash
+cd /path/to/your/repo
+git fetch origin
+git checkout <your-branch>
+git merge origin/main
+```
+
+Open conflicted files and keep the intended final content (remove all conflict markers), then run:
+
+```bash
+./scripts/check_conflict_markers.sh
+cd backend-flask && pytest -q
+```
+
+If both commands pass, commit and push:
+
+```bash
+git add .
+git commit -m "Resolve merge conflicts with main"
+git push
+```
+
+Then refresh the PR page; GitHub should allow merge.
+
