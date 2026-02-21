@@ -13,8 +13,18 @@ def predict_with_hf_or_fallback(text: str, phq_score: int | None = None, model_n
 
     from transformers import pipeline  # imported only when available
 
-    clf = pipeline("sentiment-analysis", model=model_name)
-    result = clf(text[:512])[0]
+    if not model_name:
+        out = predict_depression_severity(text, phq_score)
+        out["provider"] = "fallback"
+        return out
+
+    try:
+        clf = pipeline("sentiment-analysis", model=model_name)
+        result = clf(text[:512])[0]
+    except Exception:
+        out = predict_depression_severity(text, phq_score)
+        out["provider"] = "fallback"
+        return out
 
     # Map sentiment proxy to severity for starter production path.
     label = str(result.get("label", "POSITIVE")).upper()

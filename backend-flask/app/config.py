@@ -30,3 +30,4 @@ class Config:
 
     FER_MODEL_PATH = os.getenv("FER_MODEL_PATH", "models/fer_model.joblib")
     SER_MODEL_PATH = os.getenv("SER_MODEL_PATH", "models/ser_model.joblib")
+    BUILD_MARKER = os.getenv("BUILD_MARKER", "PRO-UI-2026-02-21")

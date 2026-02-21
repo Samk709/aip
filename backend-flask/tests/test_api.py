@@ -113,3 +113,16 @@ def test_unauthorized_blocked():
     client = app.test_client()
     resp = client.post('/api/assess', json={'user_id': 1, 'phq_score': 5})
     assert resp.status_code == 401
+
+
+def test_build_info_has_instance_metadata():
+    app = create_app()
+    app.config.update(TESTING=True)
+    client = app.test_client()
+
+    r = client.get('/api/build-info')
+    assert r.status_code == 200
+    data = r.get_json()
+    assert data['build'] == app.config['BUILD_MARKER']
+    assert app.config['BUILD_MARKER'] in data['instance']
+    assert isinstance(data['pid'], int)

@@ -173,4 +173,12 @@ Then open:
 - `http://localhost:5000/api/build-info`
 
 You must see build value: `PRO-UI-2026-02-21`.
+Also verify the `instance` and `cwd` fields match your current project folder.
 If not, you are running a different folder/old process.
+
+If you run multiple copies separately, start one app on a different port:
+```bash
+cd backend-flask
+PORT=5001 python run.py
+```
+Then open `http://localhost:5001`.

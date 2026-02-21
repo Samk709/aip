@@ -111,8 +111,20 @@ async function chat() {
 }
 
 
-(function startupChecks(){
+(async function startupChecks(){
   if (!location.href.startsWith('http://localhost:5000') && !location.href.startsWith('http://127.0.0.1:5000')) {
     showToast('Open exactly http://localhost:5000 (not Live Server/file preview)');
+    return;
+  }
+
+  try {
+    const res = await fetch('/api/build-info');
+    const info = await res.json();
+    const meta = document.getElementById('instanceMeta');
+    if (meta && info.instance) {
+      meta.innerText = `Instance ${info.instance} • pid ${info.pid}`;
+    }
+  } catch (_) {
+    showToast('Could not read /api/build-info. Wrong server may be running.');
   }
 })();

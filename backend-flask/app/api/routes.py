@@ -1,4 +1,6 @@
 from functools import wraps
+import os
+import sys
 from pathlib import Path
 from flask import Blueprint, jsonify, request, current_app
 from ..db.extensions import db
@@ -18,8 +20,6 @@ from ..services.media_models import predict_face_emotion_from_embedding, predict
 from ..services.escalation import create_moderation_audit
 
 api_bp = Blueprint("api", __name__, url_prefix="/api")
-BUILD_MARKER = "PRO-UI-2026-02-21"
-
 
 def _extract_token() -> str | None:
     auth = request.headers.get("Authorization", "")
@@ -68,8 +68,11 @@ def health():
 @api_bp.get("/build-info")
 def build_info():
     return jsonify({
-        "build": BUILD_MARKER,
+        "build": current_app.config["BUILD_MARKER"],
+        "instance": current_app.config["INSTANCE_LABEL"],
         "cwd": str(Path.cwd()),
+        "pid": os.getpid(),
+        "python": sys.executable,
     })
 
 

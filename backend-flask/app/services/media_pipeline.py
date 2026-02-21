@@ -14,7 +14,10 @@ def analyze_face_image(image_path: str) -> dict:
     if find_spec("cv2") is None:
         return {"provider": "unavailable", "emotion": "neutral", "note": "opencv not installed"}
 
-    import cv2
+    try:
+        import cv2
+    except Exception:
+        return {"provider": "unavailable", "emotion": "neutral", "note": "opencv runtime unavailable"}
 
     img = cv2.imread(image_path)
     if img is None:
@@ -29,8 +32,11 @@ def analyze_face_frame_base64(frame_data_url: str) -> dict:
     if find_spec("cv2") is None or find_spec("numpy") is None:
         return {"provider": "unavailable", "emotion": "neutral", "note": "opencv/numpy not installed"}
 
-    import cv2
-    import numpy as np
+    try:
+        import cv2
+        import numpy as np
+    except Exception:
+        return {"provider": "unavailable", "emotion": "neutral", "note": "opencv/numpy runtime unavailable"}
 
     try:
         encoded = frame_data_url.split(",", 1)[1] if "," in frame_data_url else frame_data_url
@@ -52,8 +58,11 @@ def analyze_voice_audio(audio_path: str) -> dict:
     if find_spec("librosa") is None:
         return {"provider": "unavailable", "stress": 0.5, "note": "librosa not installed"}
 
-    import librosa
-    import numpy as np
+    try:
+        import librosa
+        import numpy as np
+    except Exception:
+        return {"provider": "unavailable", "stress": 0.5, "note": "librosa runtime unavailable"}
 
     y, sr = librosa.load(audio_path, sr=None)
     if y.size == 0:
