@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neuroguard AI - Predictive Mental Health</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <style>
+        /* Top Navigation for SaaS Layout */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(10, 13, 24, 0.8);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .nav-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer {
+            padding: 40px;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+            margin-top: 60px;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <!-- Premium Dynamic Background -->
+    <div class="mesh-bg"></div>
+    <div class="ambient-glow"></div>
+
+    <!-- Navigation -->
+    <nav class="top-nav">
+        <a href="/" class="nav-brand">
+            <i class="ph-fill ph-brain" style="color: #00F2FE;"></i> Neuroguard AI
+            <span class="status-pill status-healthy" style="margin-left: 10px; font-size: 0.7rem; padding: 2px 8px; border-radius: 12px; background: rgba(0, 245, 212, 0.15); color: #00F5D4; border: 1px solid rgba(0, 245, 212, 0.3);">
+                <i class="ph-fill ph-check-circle"></i> FER v2.0 Active
+            </span>
+        </a>
+        <div class="nav-links">
+            <a href="/" class="nav-link-item">Home</a>
+            <a href="/features" class="nav-link-item">Features</a>
+            <a href="/research" class="nav-link-item">Research</a>
+            <a href="/about" class="nav-link-item">About</a>
+            <a href="/dashboard" class="nav-link-item">Dashboard</a>
+            <a href="/chat" class="nav-link-item">AI Therapist</a>
+            <a href="/admin" class="nav-link-item">Admin Panel</a>
+        </div>
+        <div class="nav-actions" id="navActions">
+            <!-- Will be populated by JS -->
+            <button class="btn btn-outline btn-sm" onclick="toggleLoginModal()">Log In</button>
+        </div>
+    </nav>
+
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="login-overlay" style="display: none; opacity: 0;">
+        <div class="login-panel glass-card custom-glass" style="position: relative;">
+            <button class="btn btn-ghost btn-icon" onclick="toggleLoginModal()"
+                style="position: absolute; top: 10px; right: 10px;"><i class="ph ph-x"></i></button>
+            <div class="panel-header"
+                style="justify-content: center; text-align: center; border-bottom: none; flex-direction: column;">
+                <div class="logo-large"><i class="ph-fill ph-brain"></i> Neuroguard AI</div>
+                <p class="subtitle" style="margin-top: 10px;">PROACTIVE INTELLIGENCE PROTOCOL</p>
+            </div>
+            <div class="input-grid login-grid">
+                <div class="input-group">
+                    <label>IDENTIFICATION</label>
+                    <input id="name" placeholder="Name (Registration)" />
+                </div>
+                <div class="input-group">
+                    <label>EMAIL</label>
+                    <input id="email" type="email" placeholder="user@example.com" value="user@example.com" />
+                </div>
+                <div class="input-group">
+                    <label>SECURITY KEY</label>
+                    <input id="password" type="password" placeholder="••••••••" value="pass1234" />
+                </div>
+                <div class="input-group">
+                    <label>LANGUAGE</label>
+                    <select id="lang">
+                        <option value="en">ENGLISH</option>
+                        <option value="hi">HINDI</option>
+                    </select>
+                </div>
+            </div>
+            <div class="action-row column-mobile" style="margin-top: 25px;">
+                <button class="btn btn-primary" onclick="loginUser()"><i class="ph-bold ph-sign-in"></i>
+                    AUTHENTICATE</button>
+                <button class="btn btn-outline" onclick="registerUser()"><i class="ph-bold ph-user-plus"></i>
+                    REGISTER</button>
+            </div>
+            <div class="action-row" style="margin-top: 15px;">
+                <button class="btn btn-ghost" style="width: 100%;" onclick="loginAnonymous()">
+                    <i class="ph-bold ph-incognito"></i> INITIATE GUEST PROTOCOL
+                </button>
+            </div>
+            <p id="uid" class="status-text text-center mt-3"></p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Neuroguard AI. All rights reserved.</p>
+        <div style="margin-top: 10px; display: flex; justify-content: center; gap: 15px;">
+            <a href="/privacy" style="color: var(--text-secondary); text-decoration: none;">Privacy Policy</a>
+            <a href="/about" style="color: var(--text-secondary); text-decoration: none;">Terms of Service</a>
+        </div>
+    </footer>
+
+    <script src="/static/js/auth.js"></script>
+    <script>
+        // Check Auth Status for layout
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('aurora_token');
+            const navActions = document.getElementById('navActions');
+            if (token) {
+                navActions.innerHTML = `
+                    <button class="btn btn-ghost btn-sm" onclick="logout()"><i class="ph ph-sign-out"></i> Logout</button>
+                    <button class="btn btn-primary btn-sm" onclick="window.location.href='/dashboard'"><i class="ph ph-squares-four"></i> Console</button>
+                `;
+            } else {
+                // If not logged in and url contains ?login=true, open modal
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('login') === 'true') {
+                    toggleLoginModal();
+                }
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('aurora_token');
+            localStorage.removeItem('aurora_user_id');
+            localStorage.removeItem('aurora_role');
+            window.location.href = '/';
+        }
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

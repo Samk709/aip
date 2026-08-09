@@ -3,7 +3,7 @@ Flask-SQLAlchemy==3.1.1
 Flask-Migrate==4.0.7
 python-dotenv==1.0.1
 requests==2.32.3
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.7
 numpy==2.0.2
 librosa==0.10.2.post1
 opencv-python==4.10.0.84
@@ -11,3 +11,9 @@ transformers==4.44.2
 torch==2.4.1
 joblib==1.4.2
 pytest==8.3.2
+google-generativeai==0.8.3
+SpeechRecognition
+gTTS
+deep-translator
+SQLAlchemy-Utils
+cryptography

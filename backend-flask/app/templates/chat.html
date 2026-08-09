@@ -1,0 +1,312 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="app-layout" style="height: calc(100vh - 80px);">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar glass-card" style="height: 100%;">
+        <nav class="sidebar-nav" style="margin-top: 20px;">
+            <a href="/dashboard" class="nav-item">
+                <i class="ph ph-squares-four"></i> Overview
+            </a>
+            <a href="/chat" class="nav-item active">
+                <i class="ph ph-chat-teardrop-dots"></i> AI Therapist
+            </a>
+            <a href="#" class="nav-item" onclick="startDigitalBiomarkerSession()">
+                <i class="ph ph-keyboard"></i> Biomarker Sync
+            </a>
+            <a href="#" class="nav-item" onclick="openAssessmentModal()">
+                <i class="ph ph-clipboard-text"></i> Assessment
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-badge">
+                <div class="avatar"><i class="ph-fill ph-user"></i></div>
+                <div class="user-info">
+                    <span id="navUserName">Active User</span>
+                    <span class="user-role">Protected Session</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="view-header" style="justify-content: space-between; display: flex; align-items: center;">
+            <div>
+                <h2>Context-Aware AI Therapist</h2>
+                <p class="subtitle">Adaptive emotional support reflecting your unique twin profile.</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button id="zenModeBtn" class="btn btn-outline btn-sm" onclick="openZenMode()"
+                    title="Enter Meditation/Relaxation Mode">
+                    <i class="ph-bold ph-flower-lotus"></i> Zen Mode
+                </button>
+                <button id="binauralToggleBtn" class="btn btn-outline btn-sm" onclick="toggleBinauralBeats()"
+                    title="Toggle Ambient Theta Wave Therapy">
+                    <i class="ph-bold ph-headphones"></i> Ambient: OFF
+                </button>
+                <button id="voiceToggleBtn" class="btn btn-outline btn-sm" onclick="toggleAIVoice()"
+                    title="Toggle AI Voice Synthesis">
+                    <i class="ph-fill ph-speaker-high"></i> AI Voice: ON
+                </button>
+            </div>
+        </header>
+
+        <div class="chat-layout">
+            <!-- Main Chat Panel -->
+            <div class="glass-card chat-main" style="height: 70vh;">
+                <!-- Emotion Drift Alert -->
+                <div id="driftAlertBanner" class="alert-banner drift-alert"
+                    style="display:none; background: rgba(255,159,10,0.1); border: 1px solid var(--accent-warning); color: var(--accent-warning);">
+                    <i class="ph-fill ph-warning-octagon"></i>
+                    <div class="alert-content">
+                        <strong>EMOTIONAL DRIFT DETECTED</strong>
+                        <span id="driftAlertText">Sudden emotional shift detected. Calibrating therapeutic
+                            approach.</span>
+                    </div>
+                </div>
+
+                <!-- Emergency Alert -->
+                <div id="emergencyBanner" class="alert-banner critical-alert"
+                    style="display:none; background: rgba(255,59,48,0.1); border: 1px solid var(--accent-primary); color: var(--accent-primary); padding: 15px;">
+                    <i class="ph-fill ph-ambulance" style="font-size: 1.5rem; margin-right: 15px;"></i>
+                    <div class="alert-content">
+                        <strong>CRITICAL RISK THRESHOLD REACHED</strong>
+                        <div style="margin-top: 5px; font-size: 0.85rem; line-height: 1.5;">
+                            Immediate intervention recommended. You are not alone. Please reach out to a trusted family
+                            member or friend, or contact:
+                            <ul style="margin: 5px 0 0 20px;">
+                                <li><strong>India (Kiran Helpline):</strong> 1800-599-0019</li>
+                                <li><strong>Global / USA:</strong> 988 or text HOME to 741741</li>
+                                <li><strong>UK:</strong> 111 or 999</li>
+                            </ul>
+                            <a href="https://www.betterhelp.com/" target="_blank"
+                                style="color: var(--accent-primary); text-decoration: underline; margin-top: 8px; display: inline-block;">Connect
+                                with a Professional Therapist Online</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- XAI (Explainable AI) Box -->
+                <div id="xaiBanner" class="alert-banner info-alert"
+                    style="display:none; background: rgba(0,240,255,0.1); border: 1px solid var(--accent-secondary); color: var(--accent-secondary);">
+                    <i class="ph-fill ph-info"></i>
+                    <div class="alert-content" id="xaiText">
+                        <!-- Model reasoning will appear here -->
+                    </div>
+                </div>
+
+                <!-- Top Controls Toolbar & Language Selector -->
+                <div class="chat-controls-toolbar" style="display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap;">
+                    <label for="documentUpload" class="btn btn-outline btn-sm" style="padding: 6px 14px; cursor: pointer; border-radius: 8px; border-color: rgba(0,242,254,0.3);" title="Upload Document for Context">
+                        <i class="ph-bold ph-paperclip"></i> Upload Document
+                    </label>
+                    <input type="file" id="documentUpload" style="display: none;" accept=".pdf,.txt,.docx" onchange="uploadDocument(event)">
+
+                    <select id="chatLang" class="btn btn-outline btn-sm" style="padding: 6px 12px; border-radius: 8px; background: rgba(10,13,24,0.8); border-color: rgba(0,242,254,0.3);" title="Select Language">
+                        <option value="en">🌐 English</option>
+                        <option value="hi">🇮🇳 Hindi</option>
+                        <option value="kn">Kannada</option>
+                        <option value="ar">Arabic</option>
+                    </select>
+
+                    <select id="aiPersona" class="btn btn-outline btn-sm" style="padding: 6px 12px; border-radius: 8px; background: rgba(10,13,24,0.8); border-color: rgba(0,242,254,0.3);" title="Select AI Persona">
+                        <option value="therapist">🧠 Supportive Therapist</option>
+                        <option value="coach">⚡ Motivational Coach</option>
+                        <option value="companion">💬 Friendly Companion</option>
+                    </select>
+
+                    <button id="micBtn" class="btn btn-outline btn-sm" onclick="toggleSpeechRecognition()" style="padding: 6px 14px; border-radius: 8px; border-color: rgba(0,242,254,0.3);" title="Voice to Text">
+                        <i class="ph-bold ph-microphone"></i> Voice
+                    </button>
+                </div>
+
+                <!-- Quick Action Prompt Chips -->
+                <div class="prompt-chips" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+                    <button class="btn btn-outline btn-sm" onclick="sendPromptChip('I feel anxious today')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; background: rgba(255,255,255,0.03);"><i class="ph-bold ph-heartbeat" style="color: #00F2FE;"></i> I feel anxious today</button>
+                    <button class="btn btn-outline btn-sm" onclick="sendPromptChip('Help me manage stress')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; background: rgba(255,255,255,0.03);"><i class="ph-bold ph-brain" style="color: #7F00FF;"></i> Help me manage stress</button>
+                    <button class="btn btn-outline btn-sm" onclick="sendPromptChip('Need motivation for study and work')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; background: rgba(255,255,255,0.03);"><i class="ph-bold ph-lightning" style="color: #00F5D4;"></i> Need motivation</button>
+                    <button class="btn btn-outline btn-sm" onclick="sendPromptChip('Having trouble sleeping tonight')" style="font-size: 0.78rem; padding: 6px 12px; border-radius: 16px; background: rgba(255,255,255,0.03);"><i class="ph-bold ph-moon" style="color: #F59E0B;"></i> Having trouble sleeping</button>
+                </div>
+
+                <!-- Main Spacious Chat Stream Area -->
+                <div class="chat-history console-output" id="chatResult"
+                    style="height: 250px; flex: 1; display:flex; flex-direction:column; gap: 12px; background: rgba(6, 9, 19, 0.6); border: 1px solid rgba(0, 242, 254, 0.2); border-radius: 12px; padding: 14px; overflow-y: auto; box-shadow: inset 0 2px 12px rgba(0,0,0,0.5); margin-bottom: 8px;">
+                    <div class="message ai-message glow-card" style="border: 1px solid rgba(0, 242, 254, 0.2); background: rgba(0, 242, 254, 0.03); border-radius: 12px; padding: 14px;">
+                        <div class="msg-header" style="color: #00F2FE; font-weight: 700;"><i class="ph-fill ph-brain"></i> Neuroguard AI Therapist</div>
+                        <div class="msg-body markdown-body" style="line-height: 1.5; margin-top: 4px; color: #FFFFFF; font-size: 0.98rem;">Secure channel established. I am here to support your mental health and emotional well-being. How are you feeling today?</div>
+                    </div>
+                </div>
+
+                <!-- Compact Main Input Area Anchored at Bottom -->
+                <div class="chat-input-area" style="display: flex; gap: 8px; width: 100%; align-items: center; flex: 0 0 46px; height: 46px;">
+                    <textarea id="msg" class="chat-input custom-input" rows="1" 
+                        placeholder="Type your thoughts here... (Press Enter to send)"
+                        onkeydown="handleKeyDown(event)"
+                        style="flex: 1; width: 100%; border-radius: 10px; font-size: 0.92rem; line-height: 1.3; padding: 10px 14px; height: 44px; min-height: 44px; max-height: 60px; resize: none; background: rgba(10, 13, 24, 0.7); border: 1px solid rgba(0, 242, 254, 0.3); color: var(--text-primary); box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);"></textarea>
+                    <button class="btn btn-primary glow-on-hover" onclick="chat()"
+                        style="height: 44px; padding: 0 18px; border-radius: 10px; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 700; font-size: 0.9rem;">
+                        <span>Send</span> <i class="ph-bold ph-paper-plane-right" style="font-size: 1rem;"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Side Context Panel -->
+            <div class="chat-sidebar">
+                <div class="glass-card module-card" style="padding: 20px;">
+                    <h4 style="margin-bottom: 10px;"><i class="ph-fill ph-file-text"></i> Active Documents</h4>
+                    <p class="helper-text" style="font-size: 0.8rem; margin-bottom: 10px;">The AI uses these securely
+                        stored documents for deep context.</p>
+                    <div id="documentContextList" style="display:flex; flex-direction:column; gap: 8px;">
+                        <span id="noDocsText"
+                            style="font-size: 0.8rem; color: var(--text-secondary); font-style: italic;">No documents
+                            uploaded.</span>
+                    </div>
+                </div>
+
+                <div class="glass-card module-card" style="padding: 20px;">
+                    <h4 style="margin-bottom: 10px;"><i class="ph-fill ph-brain"></i> Memory Context</h4>
+                    <p class="helper-text" style="font-size: 0.8rem; margin-bottom: 10px;">The AI relies on this context
+                        module to personalize therapy.</p>
+                    <div class="memory-box" id="memoryContextBox"
+                        style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent-secondary); padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px;">
+                        Building context...
+                    </div>
+                </div>
+
+                <!-- AI Mood Journal -->
+                <div class="glass-card module-card"
+                    style="padding: 16px; border-color: rgba(0, 240, 255, 0.3); background: rgba(0, 240, 255, 0.03);">
+                    <h4 style="margin-bottom: 6px; color: #00F2FE;"><i class="ph-fill ph-book-open"></i> AI Mood Journal</h4>
+                    <p class="helper-text" style="font-size: 0.78rem; margin-bottom: 8px; color: #94A3B8;">Record thoughts or dreams for instant psychological sentiment decoding & memory sync.</p>
+                    
+                    <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px;">
+                        <button class="btn btn-outline btn-sm" onclick="appendMoodTag('😌 Feeling peaceful and focused today.')" style="font-size: 0.72rem; padding: 3px 7px; border-radius: 12px; background: rgba(0,255,212,0.06);">😌 Calm</button>
+                        <button class="btn btn-outline btn-sm" onclick="appendMoodTag('🤯 Feeling overwhelmed with work and pressure.')" style="font-size: 0.72rem; padding: 3px 7px; border-radius: 12px; background: rgba(255,100,100,0.06);">🤯 Stressed</button>
+                        <button class="btn btn-outline btn-sm" onclick="appendMoodTag('🌧️ Feeling anxious and having trouble resting.')" style="font-size: 0.72rem; padding: 3px 7px; border-radius: 12px; background: rgba(245,158,11,0.06);">🌧️ Anxious</button>
+                        <button class="btn btn-outline btn-sm" onclick="appendMoodTag('⚡ Feeling energetic and ready to conquer goals!')" style="font-size: 0.72rem; padding: 3px 7px; border-radius: 12px; background: rgba(0,242,254,0.06);">⚡ Motivated</button>
+                    </div>
+
+                    <textarea id="journalInput" class="custom-input" rows="3"
+                        placeholder="Today I felt really overwhelmed because..."
+                        style="resize: vertical; font-size: 0.84rem; margin-bottom: 8px; background: rgba(6, 9, 19, 0.8); border: 1px solid rgba(0,242,254,0.3); border-radius: 8px; color: #FFFFFF; padding: 8px 10px;"></textarea>
+                    <button class="btn btn-primary btn-sm glow-on-hover" onclick="decodeJournal()" id="btnDecodeJournal"
+                        style="width: 100%; font-weight: 700; font-size: 0.85rem; height: 36px; display: flex; align-items: center; justify-content: center; gap: 6px;"><i class="ph-bold ph-magic-wand"></i> Analyze & Sync Journal</button>
+                    <div id="decoderOutput"
+                        style="display: none; margin-top: 10px; font-size: 0.82rem; padding: 10px; background: rgba(6,9,19,0.9); border-radius: 8px; border: 1px solid rgba(0,242,254,0.3); box-shadow: 0 4px 12px rgba(0,0,0,0.4);">
+                    </div>
+                </div>
+
+                <div class="glass-card module-card" id="recommendationsPanel" style="display:none; padding: 20px;">
+                    <h4 style="margin-bottom: 10px;"><i class="ph-fill ph-prescription"></i> Protocols</h4>
+                    <div id="recsContainer" class="recs-list" style="display:flex; flex-direction:column; gap: 8px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Biomarker & Real-Time FER Facial Landmark Calibration Modal -->
+<div id="biomarkerModal" class="modal-overlay"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(10,13,24,0.92); z-index:1000; justify-content:center; align-items:center; backdrop-filter: blur(12px);">
+    <div class="glass-card" style="padding: 22px 26px; border-radius: 16px; width: 620px; max-width: 95%; max-height: 90vh; overflow-y: auto; text-align: center; border: 1px solid rgba(0,240,255,0.3); box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: #00F2FE; margin:0;"><i class="ph-fill ph-camera"></i> Real-Time Facial Recognition</h3>
+            <span class="badge" style="background: rgba(127,0,255,0.2); color: #00F2FE; border: 1px solid rgba(0,242,254,0.4); font-size: 0.72rem; padding: 4px 10px; border-radius: 12px;">OpenCV + FER-2013</span>
+        </div>
+        <p class="text-secondary" style="margin-bottom: 10px; font-size: 0.8rem;">Align your face in the frame to extract live facial landmarks & emotion breakdown.</p>
+        
+        <div class="cam-container" style="position: relative; width: 100%; height: 240px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,240,254,0.4); background: #060913;">
+            <video id="biomarkerVideo" autoplay muted class="cam-video" style="width: 100%; height: 100%; object-fit: cover;"></video>
+            <canvas id="biomarkerCanvas" class="cam-canvas" style="position: absolute; top:0; left:0; width: 100%; height: 100%;"></canvas>
+        </div>
+
+        <!-- Live Detected Emotion Display Banner -->
+        <div id="liveEmotionBadge" style="margin-top: 10px; padding: 10px; background: rgba(0, 242, 254, 0.08); border: 1px solid rgba(0, 242, 254, 0.3); border-radius: 10px; text-align: center;">
+            <span style="font-size: 0.72rem; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; display: block; font-weight: 600;">LIVE DETECTED FACIAL EXPRESSION</span>
+            <span id="liveEmotionText" style="font-size: 1.3rem; font-weight: 800; color: #00F2FE; text-transform: uppercase; margin-top: 2px; display: block; letter-spacing: 1px;">READY TO SCAN</span>
+        </div>
+
+        <!-- Emotion Confidence Breakdown Grid - 4 Columns in 1 Row -->
+        <div class="emotion-meter-grid" id="liveEmotionGrid" style="margin-top: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+            <div class="meter-card" id="meter-happy" style="padding: 8px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <div class="meter-title" style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Happy</div>
+                <div class="meter-val" id="val-happy" style="font-size: 1.1rem; font-weight: 700; color: #00F5D4; margin: 2px 0;">0%</div>
+                <div class="meter-bar-track" style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;"><div class="meter-bar-fill" id="fill-happy" style="height: 100%; width: 0%; background: #00F5D4; transition: width 0.4s ease;"></div></div>
+            </div>
+            <div class="meter-card" id="meter-neutral" style="padding: 8px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <div class="meter-title" style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Neutral</div>
+                <div class="meter-val" id="val-neutral" style="font-size: 1.1rem; font-weight: 700; color: #00F2FE; margin: 2px 0;">0%</div>
+                <div class="meter-bar-track" style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;"><div class="meter-bar-fill" id="fill-neutral" style="height: 100%; width: 0%; background: #00F2FE; transition: width 0.4s ease;"></div></div>
+            </div>
+            <div class="meter-card" id="meter-sad" style="padding: 8px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <div class="meter-title" style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Sad</div>
+                <div class="meter-val" id="val-sad" style="font-size: 1.1rem; font-weight: 700; color: #38BDF8; margin: 2px 0;">0%</div>
+                <div class="meter-bar-track" style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;"><div class="meter-bar-fill" id="fill-sad" style="height: 100%; width: 0%; background: #38BDF8; transition: width 0.4s ease;"></div></div>
+            </div>
+            <div class="meter-card" id="meter-surprise" style="padding: 8px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <div class="meter-title" style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Surprise</div>
+                <div class="meter-val" id="val-surprise" style="font-size: 1.1rem; font-weight: 700; color: #F59E0B; margin: 2px 0;">0%</div>
+                <div class="meter-bar-track" style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;"><div class="meter-bar-fill" id="fill-surprise" style="height: 100%; width: 0%; background: #F59E0B; transition: width 0.4s ease;"></div></div>
+            </div>
+        </div>
+
+        <div id="biomarkerStatus" style="margin-top: 10px; min-height: 20px; color: var(--accent-secondary); font-size: 0.8rem; font-weight: 500;">
+            Ready to calibrate...
+        </div>
+        <div style="margin-top: 14px; display: flex; gap: 10px; justify-content: center; align-items: center;">
+            <button class="btn btn-outline btn-sm" onclick="stopDigitalBiomarkerSession()" style="padding: 8px 16px; font-size: 0.82rem;"><i class="ph-bold ph-x"></i> Cancel</button>
+            <button class="btn btn-outline btn-sm" onclick="downloadBiomarkerPDFReport()" style="border-color: #00F2FE; color: #00F2FE; padding: 8px 16px; font-size: 0.82rem;"><i class="ph-bold ph-file-pdf"></i> Download PDF Report</button>
+            <button class="btn btn-primary btn-sm glow-on-hover" onclick="captureBiomarkers()" style="padding: 8px 18px; font-size: 0.82rem;"><i class="ph-fill ph-aperture"></i> Capture Emotion Analysis</button>
+        </div>
+    </div>
+</div>
+
+<!-- Zen Mode Overlay -->
+<div id="zenModeOverlay" class="modal-overlay"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #0f172a, #1e1b4b); z-index:2000; justify-content:center; align-items:center; flex-direction:column; color:white;">
+    <button onclick="closeZenMode()" class="btn btn-outline"
+        style="position:absolute; top:30px; right:30px; font-size:1.5rem; padding: 10px 15px;"><i
+            class="ph-bold ph-x"></i></button>
+    <div style="text-align:center; margin-bottom: 50px;">
+        <h1 style="font-weight: 300; letter-spacing: 2px;">4-7-8 Breathing</h1>
+        <p style="color: var(--text-secondary); margin-top: 10px; font-size: 1.2rem;">Follow the circle.</p>
+    </div>
+    <div id="zenCircle"
+        style="width: 150px; height: 150px; border-radius: 50%; background: rgba(0, 240, 255, 0.2); border: 2px solid var(--accent-secondary); box-shadow: 0 0 30px rgba(0,240,255,0.4); display: flex; justify-content: center; align-items: center; transition: all 4s ease-in-out;">
+        <span id="zenInstruction" style="font-size: 1.5rem; font-weight: 500;">Breathe In</span>
+    </div>
+<!-- Assessment Questionnaire Modal -->
+<div id="assessmentModal" class="login-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+    <div class="login-panel glass-card custom-glass" style="width: 100%; max-width: 460px; padding: 24px; border: 1px solid rgba(0,242,254,0.3); border-radius: 16px; background: rgba(10,13,24,0.95);">
+        <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 16px;">
+            <h3 style="color: #00F2FE; margin: 0; display: flex; align-items: center; gap: 8px;"><i class="ph-fill ph-clipboard-text"></i> Clinical Mental Health Assessment</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeAssessmentModal()" style="font-size: 1.2rem; color: #94A3B8;">&times;</button>
+        </div>
+        <div class="input-grid mt-4" style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="input-group">
+                <label style="font-size: 0.78rem; color: #CBD5E1;">PHQ-9 DEPRESSION SCORE [0-27]</label>
+                <input id="phq" type="number" min="0" max="27" value="8" class="custom-input" style="width: 100%; padding: 8px 12px; font-size: 0.9rem; background: rgba(6,9,19,0.8); border: 1px solid rgba(0,242,254,0.3); border-radius: 8px; color: #FFF;" />
+            </div>
+            <div class="input-group">
+                <label style="font-size: 0.78rem; color: #CBD5E1;">SLEEP QUALITY RATING [1-10]</label>
+                <input id="sleep_score" type="number" min="1" max="10" value="5" class="custom-input" style="width: 100%; padding: 8px 12px; font-size: 0.9rem; background: rgba(6,9,19,0.8); border: 1px solid rgba(0,242,254,0.3); border-radius: 8px; color: #FFF;" />
+            </div>
+            <div class="input-group">
+                <label style="font-size: 0.78rem; color: #CBD5E1;">RECENT THOUGHTS / CLINICAL NOTES (OPTIONAL)</label>
+                <input id="assess_text" type="text" placeholder="e.g. Feeling overwhelmed with workload..." class="custom-input" style="width: 100%; padding: 8px 12px; font-size: 0.9rem; background: rgba(6,9,19,0.8); border: 1px solid rgba(0,242,254,0.3); border-radius: 8px; color: #FFF;" />
+            </div>
+        </div>
+        <div class="action-row mt-4" style="margin-top: 18px;">
+            <button class="btn btn-primary glow-on-hover" onclick="submitAssessmentModal()" style="width: 100%; height: 42px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px;"><i class="ph-bold ph-paper-plane"></i> SUBMIT & SYNC CLINICAL ASSESSMENT</button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script src="/static/js/chat_advanced.js?v=2.5.0"></script>
+{% endblock %}

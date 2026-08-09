@@ -1,53 +1,378 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mental Health Assistant</title>
-  <link rel="stylesheet" href="/static/css/style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neuroguard AI - Predictive Mental Health</title>
+    <!-- Google Fonts for Premium Typography -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Marked.js for Markdown Parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Face-API.js for Live Bio-Scanning -->
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css" />
 </head>
+
 <body>
-  <main>
-    <h1>Mental Health Risk + AI Chatbot (Enhanced Starter)</h1>
-    <p>Register/login, assess PHQ risk, run multimodal analysis, and chat.</p>
+    <!-- Premium Dynamic Background -->
+    <div class="mesh-bg"></div>
+    <div class="ambient-glow"></div>
+    <div class="particles-container" id="particles"></div>
 
-    <section>
-      <h2>Auth</h2>
-      <input id="name" placeholder="Name" value="Student" />
-      <input id="email" placeholder="Email" value="student@example.com" />
-      <input id="password" type="password" placeholder="Password" value="pass1234" />
-      <select id="lang">
-        <option value="en">English</option>
-        <option value="hi">Hindi</option>
-      </select>
-      <button onclick="registerUser()">Register</button>
-      <button onclick="loginUser()">Login</button>
-      <p id="uid"></p>
-    </section>
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-panel glass-card custom-glass">
+            <div class="panel-header"
+                style="justify-content: center; text-align: center; border-bottom: none; flex-direction: column;">
+                <div class="logo-large"><i class="ph-fill ph-brain"></i> Neuroguard AI</div>
+                <p class="subtitle" style="margin-top: 10px;">PROACTIVE INTELLIGENCE PROTOCOL</p>
+            </div>
+            <div class="input-grid login-grid">
+                <div class="input-group">
+                    <label>IDENTIFICATION</label>
+                    <input id="name" placeholder="Name (Registration)" />
+                </div>
+                <div class="input-group">
+                    <label>EMAIL</label>
+                    <input id="email" type="email" placeholder="user@example.com" value="user@example.com" />
+                </div>
+                <div class="input-group">
+                    <label>SECURITY KEY</label>
+                    <input id="password" type="password" placeholder="••••••••" value="pass1234" />
+                </div>
+                <div class="input-group">
+                    <label>LANGUAGE</label>
+                    <select id="lang">
+                        <option value="en">ENGLISH</option>
+                        <option value="hi">HINDI</option>
+                    </select>
+                </div>
+            </div>
+            <div class="action-row column-mobile" style="margin-top: 25px;">
+                <button class="btn btn-primary" onclick="loginUser()"><i class="ph-bold ph-sign-in"></i>
+                    AUTHENTICATE</button>
+                <button class="btn btn-outline" onclick="registerUser()"><i class="ph-bold ph-user-plus"></i>
+                    REGISTER</button>
+            </div>
+            <div class="action-row" style="margin-top: 15px;">
+                <button class="btn btn-ghost" style="width: 100%;" onclick="loginAnonymous()">
+                    <i class="ph-bold ph-incognito"></i> INITIATE GUEST PROTOCOL
+                </button>
+            </div>
+            <p id="uid" class="status-text"></p>
+        </div>
+    </div>
 
-    <section>
-      <h2>Assessment</h2>
-      <input id="phq" type="number" min="0" max="27" value="8" />
-      <button onclick="assess()">Run Assessment</button>
-      <pre id="assessmentResult"></pre>
-    </section>
+    <!-- Main Dashboard Application -->
+    <div id="appDashboard" class="app-layout" style="display: none;">
 
-    <section>
-      <h2>Multimodal</h2>
-      <input id="face" placeholder="face emotion (happy/sad/neutral)" value="sad" />
-      <input id="energy" type="number" step="0.1" min="0" max="1" value="0.7" />
-      <input id="pitch" type="number" step="0.1" min="0" max="1" value="0.6" />
-      <button onclick="analyzeMultimodal()">Analyze</button>
-      <pre id="multiResult"></pre>
-    </section>
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass-card">
+            <div class="sidebar-header">
+                <div class="logo"><i class="ph-fill ph-brain"></i> Neuroguard AI</div>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-target="#view-dashboard">
+                    <i class="ph ph-squares-four"></i> Overview
+                </a>
+                <a href="#" class="nav-item" data-target="#view-chat">
+                    <i class="ph ph-chat-teardrop-dots"></i> AI Therapist
+                </a>
+                <a href="#" class="nav-item" data-target="#view-assessment">
+                    <i class="ph ph-clipboard-text"></i> Assessment
+                </a>
+                <a href="#" class="nav-item" data-target="#view-camera">
+                    <i class="ph ph-scan"></i> Bio-Scan
+                </a>
+                <a href="#" class="nav-item" data-target="#view-privacy">
+                    <i class="ph ph-shield-check"></i> Privacy & Edge
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-badge">
+                    <div class="avatar"><i class="ph-fill ph-user"></i></div>
+                    <div class="user-info">
+                        <span id="navUserName">Active User</span>
+                        <span class="user-role">Protected Session</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
 
-    <section>
-      <h2>Chat</h2>
-      <input id="msg" placeholder="Type message" value="I feel anxious today" />
-      <button onclick="chat()">Send</button>
-      <pre id="chatResult"></pre>
-    </section>
-  </main>
-  <script src="/static/js/app.js"></script>
+        <!-- Main Content Area -->
+        <main class="main-content">
+
+            <!-- View: Dashboard Overview -->
+            <section id="view-dashboard" class="view-section active">
+                <header class="view-header">
+                    <div>
+                        <h2>Command Center</h2>
+                        <p class="subtitle">Real-time mental health analytics and forecasting.</p>
+                    </div>
+                    <button class="btn btn-outline btn-sm" onclick="loadDashboard()">
+                        <i class="ph ph-arrows-clockwise"></i> Sync
+                    </button>
+                </header>
+
+                <div class="dashboard-grid">
+                    <!-- MHSI Gauge Component -->
+                    <div class="glass-card stat-card glow-card">
+                        <div class="card-header">
+                            <h3><i class="ph-fill ph-shield-warning"></i> MHSI Index</h3>
+                            <span class="badge" id="dtState">SYNCING...</span>
+                        </div>
+                        <div class="gauge-container">
+                            <canvas id="mhsiChart" height="150"></canvas>
+                            <div class="gauge-value">
+                                <span id="mhsiScoreText">--</span>
+                            </div>
+                        </div>
+                        <p class="helper-text text-center">Mental Health Safety Index (0-100)</p>
+                    </div>
+
+                    <!-- Relapse Prediction Component -->
+                    <div class="glass-card stat-card">
+                        <div class="card-header">
+                            <h3><i class="ph-fill ph-trend-up"></i> Relapse Forecast</h3>
+                            <button class="btn btn-ghost btn-icon" onclick="runRelapsePrediction()"
+                                title="Run Forecast"><i class="ph ph-play"></i></button>
+                        </div>
+                        <div class="forecast-content">
+                            <div class="probability-circle" id="relapseProbRing">
+                                <h1 id="relapseProbText">--%</h1>
+                                <span>2-4 Wk Risk</span>
+                            </div>
+                            <div class="factors-list">
+                                <h4>Risk Factors</h4>
+                                <ul id="relapseFactors">
+                                    <li class="placeholder-text">Awaiting scan...</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Escalation Graph -->
+                    <div class="glass-card chart-card span-2">
+                        <div class="card-header">
+                            <h3><i class="ph-fill ph-chart-line-up"></i> Risk Escalation Graph</h3>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="riskChart" height="250"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Digital Biomarker Insights -->
+                    <div class="glass-card stat-card">
+                        <div class="card-header">
+                            <h3><i class="ph-fill ph-fingerprint"></i> Digital Twin</h3>
+                        </div>
+                        <div class="twin-details">
+                            <div class="detail-row">
+                                <span>Personality Profile</span>
+                                <strong id="dtPersonality">Analyzing...</strong>
+                            </div>
+                            <div class="detail-row">
+                                <span>Emotional Trend</span>
+                                <strong class="trend-badge" id="dtTrend">Synchronizing</strong>
+                            </div>
+                            <div class="detail-row">
+                                <span>Detected Triggers</span>
+                                <div id="dtTriggers" class="tags-container"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Real-Time Keystroke Dynamics -->
+                    <div class="glass-card stat-card">
+                        <div class="card-header">
+                            <h3><i class="ph-fill ph-keyboard"></i> Keystroke Dynamics</h3>
+                        </div>
+                        <div class="chart-wrapper" style="position:relative; height:130px; width:100%;">
+                            <canvas id="keystrokeChart"></canvas>
+                        </div>
+                        <div class="console-output small-console" id="biomarkerConsole"
+                            style="margin-top:10px; min-height:40px;">
+                            > Tracking live keystroke telemetry...
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- View: AI Therapist Chat -->
+            <section id="view-chat" class="view-section">
+                <header class="view-header">
+                    <div>
+                        <h2>Context-Aware AI Therapist</h2>
+                        <p class="subtitle">Adaptive emotional support reflecting your unique twin profile.</p>
+                    </div>
+                </header>
+
+                <div class="chat-layout">
+                    <!-- Main Chat Panel -->
+                    <div class="glass-card chat-main">
+                        <!-- Emotion Drift Alert -->
+                        <div id="driftAlertBanner" class="alert-banner drift-alert" style="display:none;">
+                            <i class="ph-fill ph-warning-octagon"></i>
+                            <div class="alert-content">
+                                <strong>EMOTIONAL DRIFT DETECTED</strong>
+                                <span id="driftAlertText">Sudden severe depressive drift detected. Re-calibrating
+                                    response profile.</span>
+                            </div>
+                        </div>
+
+                        <!-- Emergency Alert -->
+                        <div id="emergencyBanner" class="alert-banner critical-alert" style="display:none;">
+                            <i class="ph-fill ph-ambulance"></i>
+                            <div class="alert-content">
+                                <strong>CRITICAL RISK THRESHOLD REACHED</strong>
+                                <span>Immediate intervention recommended. Please contact an emergency hotline.</span>
+                            </div>
+                        </div>
+
+                        <!-- XAI Box -->
+                        <div id="xaiBanner" class="alert-banner info-alert" style="display:none;">
+                            <i class="ph-fill ph-info"></i>
+                            <div class="alert-content" id="xaiText">
+                                <!-- LIME Explanation inside -->
+                            </div>
+                        </div>
+
+                        <div class="chat-history console-output" id="chatResult">
+                            > SECURE CHANNEL ESTABLISHED. AWAITING INPUT...
+                        </div>
+
+                        <div class="chat-input-area">
+                            <input id="msg" class="chat-input" placeholder="Initiate transmission..."
+                                autocomplete="off" />
+                            <button class="btn btn-outline glow-on-hover" id="voiceBtn" onclick="toggleVoice()"
+                                title="Dictate Message"><i class="ph-bold ph-microphone"></i></button>
+                            <button class="btn btn-primary glow-on-hover" onclick="chat()"><i
+                                    class="ph-bold ph-paper-plane-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Side Context Panel -->
+                    <div class="chat-sidebar">
+                        <div class="glass-card module-card">
+                            <h4><i class="ph-fill ph-brain"></i> Memory Context</h4>
+                            <p class="helper-text">The AI is currently holding the following context to adapt to you:
+                            </p>
+                            <div class="memory-box" id="memoryContextBox">
+                                Building context...
+                            </div>
+                        </div>
+
+                        <div class="glass-card module-card" id="recommendationsPanel" style="display:none;">
+                            <h4><i class="ph-fill ph-prescription"></i> Protocols</h4>
+                            <div id="recsContainer" class="recs-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- View: Clinical Assessment -->
+            <section id="view-assessment" class="view-section">
+                <header class="view-header">
+                    <h2>Manual Assessment Entry</h2>
+                </header>
+                <div class="glass-card form-card">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label>PHQ-9 SCORE [0-27]</label>
+                            <input id="phq" type="number" min="0" max="27" value="8" />
+                        </div>
+                        <div class="input-group">
+                            <label>SLEEP QUALITY [1-10]</label>
+                            <input id="sleep_score" type="number" min="1" max="10" value="5" />
+                        </div>
+                    </div>
+                    <div class="action-row" style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="assess()"><i class="ph-bold ph-stethoscope"></i> RUN
+                            ASSESSMENT</button>
+                    </div>
+                    <div class="console-output mt-4">
+                        <pre id="assessmentResult">> STANDBY</pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- View: Bio-Scan (Camera) -->
+            <section id="view-camera" class="view-section">
+                <header class="view-header">
+                    <h2>Biometric Micro-expression Scan</h2>
+                    <span id="faceApiModelStatus" class="badge"
+                        style="background:rgba(255,159,10,0.1); color:var(--accent-warning);">INITIALIZING EDGE AI
+                        MODELS...</span>
+                </header>
+                <div class="glass-card camera-card">
+                    <div class="camera-container"
+                        style="position:relative; background:#000; width:100%; display:flex; justify-content:center;">
+                        <video id="webcam" autoplay playsinline style="width:100%; height:auto;"></video>
+                        <canvas id="snapshot"
+                            style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:15; display:block;"></canvas>
+                        <div class="scanner-overlay"></div>
+                    </div>
+                    <div class="action-row center" style="margin-top: 20px;">
+                        <button class="btn btn-primary glow-on-hover" id="startLiveScanBtn" onclick="startLiveScan()"><i
+                                class="ph-bold ph-aperture"></i> INITIATE LIVE EDGE TRACKING</button>
+                    </div>
+
+                    <div id="reportContainer" class="report-console" style="display:none; margin-top:20px;">
+                        <h3 class="highlight-text">DOMINANT_EMOTION: <span id="repEmotion"
+                                style="color:var(--accent-success);">AWAITING FACIAL LOCK...</span></h3>
+                        <div class="report-box mt-3"
+                            style="background:rgba(0,0,0,0.3); padding:16px; border-radius:8px;">
+                            <h4 class="text-secondary"
+                                style="font-family:var(--font-mono); font-size:0.85rem; margin-bottom:8px;">[ AI EDGE
+                                TELEMETRY ]</h4>
+                            <p id="repProblems" style="font-size:0.9rem;">Extracting 68 high-density facial landmarks...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- View: Privacy & Federated Learning -->
+            <section id="view-privacy" class="view-section">
+                <header class="view-header">
+                    <h2>Federated Edge Learning</h2>
+                    <p class="subtitle">Securely improve the global AI model without sharing raw mental health data.</p>
+                </header>
+                <div class="glass-card form-card">
+                    <div class="module-header">
+                        <h3><i class="ph-fill ph-lock-key"></i> Privacy-Preserving Mode</h3>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="flToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <p class="helper-text mt-3">When active, your chat logs are never sent to the central model server.
+                        Instead, a local lightweight model trains on your device and only sends an encrypted
+                        mathematical gradient update (a string of numbers) back to the Companion.</p>
+
+                    <div class="action-row mt-4">
+                        <button class="btn btn-primary" onclick="triggerFederatedSync()"><i
+                                class="ph-bold ph-arrows-merge"></i> SIMULATE SECURE SYNC</button>
+                    </div>
+
+                    <div class="console-output mt-4" id="flConsole">
+                        > LOCAL MODEL STANDBY...
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/animations.js"></script>
+    <script src="/static/js/app.js"></script>
 </body>
+
 </html>

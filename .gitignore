@@ -1,4 +1,4 @@
-﻿# Python
+# Python
 __pycache__/
 *.py[cod]
 *.pyo
@@ -11,11 +11,23 @@ __pycache__/
 venv/
 backend-flask/.venv/
 
-# Local runtime files
+# Local runtime & database files
 *.sqlite
 *.db
 backend-flask/instance/
 backend-flask/mental_health.db
+
+# Secrets & Environment variables
+.env
+*.env
+backend-flask/.env
+
+# Logs, temporary files, and media artifacts
+*.log
+backend-flask/err.log
+backend-flask/flask.log
+backend-flask/gemini_err.txt
+backend-flask/test_tts.mp3
 
 # OS/editor
 .DS_Store

@@ -24,8 +24,8 @@ class Config:
     TOKEN_TTL_HOURS = int(os.getenv("TOKEN_TTL_HOURS", "24"))
 
     RASA_WEBHOOK_URL = os.getenv("RASA_WEBHOOK_URL", "")
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-    OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+    GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
     HF_MODEL_NAME = os.getenv("HF_MODEL_NAME", "distilbert-base-uncased")
 
     FER_MODEL_PATH = os.getenv("FER_MODEL_PATH", "models/fer_model.joblib")

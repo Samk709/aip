@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="app-layout" style="height: calc(100vh - 80px);">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar glass-card" style="height: 100%;">
+        <nav class="sidebar-nav" style="margin-top: 20px;">
+            <a href="/dashboard" class="nav-item">
+                <i class="ph ph-squares-four"></i> Overview
+            </a>
+            <a href="/admin" class="nav-item active">
+                <i class="ph ph-shield-check"></i> Admin & Moderation
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-badge">
+                <div class="avatar"><i class="ph-fill ph-user"></i></div>
+                <div class="user-info">
+                    <span id="navUserName">System Admin</span>
+                    <span class="user-role">Level 4 Access</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="view-header">
+            <div>
+                <h2>Enterprise Administration Panel</h2>
+                <p class="subtitle">System performance, moderation logs, and anonymized cohort statistics.</p>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="loadAdminData()">
+                <i class="ph ph-arrows-clockwise"></i> Refresh
+            </button>
+        </header>
+
+        <div class="dashboard-grid" style="grid-template-columns: repeat(2, 1fr);">
+            <div class="glass-card stat-card glow-card">
+                <div class="card-header">
+                    <h3><i class="ph-fill ph-users"></i> Platform Users</h3>
+                </div>
+                <div style="max-height: 250px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <thead style="text-align: left; border-bottom: 1px solid var(--glass-border);">
+                            <tr>
+                                <th style="padding: 10px;">ID</th>
+                                <th style="padding: 10px;">Name/Email</th>
+                                <th style="padding: 10px;">Role</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="3" style="padding: 10px;">Loading data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="glass-card stat-card">
+                <div class="card-header">
+                    <h3><i class="ph-fill ph-warning-octagon"></i> Moderation Escalations</h3>
+                </div>
+                <div style="max-height: 250px; overflow-y: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <thead style="text-align: left; border-bottom: 1px solid var(--glass-border);">
+                            <tr>
+                                <th style="padding: 10px;">Audit ID</th>
+                                <th style="padding: 10px;">User ID</th>
+                                <th style="padding: 10px;">Trigger Terms</th>
+                                <th style="padding: 10px;">Crisis</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditTableBody">
+                            <tr>
+                                <td colspan="4" style="padding: 10px;">Loading data...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/admin.js"></script>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    .hero {
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 40px;
+    }
+
+    .hero h1 {
+        font-size: 4.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 20px;
+        line-height: 1.1;
+    }
+
+    .hero p {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin-bottom: 40px;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 20px;
+    }
+
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        padding: 40px 80px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        padding: 30px;
+        text-align: left;
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--accent-secondary);
+        margin-bottom: 20px;
+        display: inline-block;
+        padding: 15px;
+        background: rgba(0, 240, 255, 0.1);
+        border-radius: 12px;
+    }
+</style>
+
+<div class="hero">
+    <div class="badge glow-card"
+        style="margin-bottom: 20px; border-radius: 20px; padding: 8px 16px; font-size: 0.85rem; border: 1px solid var(--accent-secondary);">
+        <i class="ph-fill ph-sparkle"></i> powered by cutting-edge ai
+    </div>
+    <h1>Predict. Prevent. Protect.</h1>
+    <p>A high-end predictive mental health monitoring and adaptive support system. Deep-learning emotionally supportive
+        architecture for enterprise healthcare.</p>
+    <div class="hero-buttons">
+        <button class="btn btn-primary" onclick="window.location.href='/dashboard'"
+            style="font-size: 1.1rem; padding: 16px 32px;">
+            <i class="ph-bold ph-stethoscope"></i> Start Assessment
+        </button>
+        <button class="btn btn-outline" onclick="window.location.href='/chat'"
+            style="font-size: 1.1rem; padding: 16px 32px;">
+            <i class="ph-bold ph-chat-circle-dots"></i> Talk to AI
+        </button>
+    </div>
+</div>
+
+<div class="feature-grid">
+    <div class="glass-card feature-card glow-card">
+        <div class="feature-icon"><i class="ph ph-shield-warning"></i></div>
+        <h3>Risk Prediction</h3>
+        <p class="mt-3 text-secondary">Multidimensional risk scoring processing sentiment and biometrics in real-time.
+        </p>
+    </div>
+    <div class="glass-card feature-card glow-card">
+        <div class="feature-icon" style="color: var(--accent-success); background: rgba(16,185,129,0.1);"><i
+                class="ph ph-detective"></i></div>
+        <h3>Explainable AI</h3>
+        <p class="mt-3 text-secondary">Transparent model confidence levels with extracted emotional triggers and
+            highlighted clinical keywords.</p>
+    </div>
+    <div class="glass-card feature-card glow-card">
+        <div class="feature-icon" style="color: var(--accent-warning); background: rgba(245,158,11,0.1);"><i
+                class="ph ph-trend-up"></i></div>
+        <h3>Relapse Forecasting</h3>
+        <p class="mt-3 text-secondary">Analyzes historical patterns to forecast mental health relapses weeks before they
+            occur.</p>
+    </div>
+</div>
+
+<div class="research-backed"
+    style="text-align: center; margin: 60px auto; max-width: 800px; padding: 40px; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);">
+    <h3
+        style="color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; margin-bottom: 20px;">
+        Research-Backed Credibility</h3>
+    <div style="display: flex; justify-content: center; gap: 40px; opacity: 0.6;">
+        <div style="font-weight: 800; font-size: 1.5rem; font-family: var(--font-mono);">Harvard Medical</div>
+        <div style="font-weight: 800; font-size: 1.5rem; font-family: var(--font-mono);">Stanford Medicine</div>
+        <div style="font-weight: 800; font-size: 1.5rem; font-family: var(--font-mono);">Nature Psychiatry</div>
+    </div>
+</div>
+{% endblock %}
