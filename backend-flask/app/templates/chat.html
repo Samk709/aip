@@ -227,27 +227,42 @@
             <span id="liveEmotionText" style="font-size: 1.3rem; font-weight: 800; color: #00F2FE; text-transform: uppercase; margin-top: 2px; display: block; letter-spacing: 1px;">READY TO SCAN</span>
         </div>
 
-        <!-- Emotion Confidence Breakdown Grid - 4 Columns in 1 Row -->
-        <div class="emotion-meter-grid" id="liveEmotionGrid" style="margin-top: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
-            <div class="meter-card" id="meter-happy" style="padding: 8px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                <div class="meter-title" style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Happy</div>
-                <div class="meter-val" id="val-happy" style="font-size: 1.1rem; font-weight: 700; color: #00F5D4; margin: 2px 0;">0%</div>
+        <!-- Emotion Confidence Breakdown Grid - 7 Columns for FER-2013 Classes -->
+        <div class="emotion-meter-grid" id="liveEmotionGrid" style="margin-top: 12px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;">
+            <div class="meter-card" id="meter-happy" style="padding: 6px 4px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <div class="meter-title" style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Happy</div>
+                <div class="meter-val" id="val-happy" style="font-size: 0.95rem; font-weight: 700; color: #00F5D4; margin: 2px 0;">0%</div>
                 <div class="meter-bar-track" style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;"><div class="meter-bar-fill" id="fill-happy" style="height: 100%; width: 0%; background: #00F5D4; transition: width 0.4s ease;"></div></div>
             </div>
-            <div class="meter-card" id="meter-neutral" style="padding: 8px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                <div class="meter-title" style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Neutral</div>
-                <div class="meter-val" id="val-neutral" style="font-size: 1.1rem; font-weight: 700; color: #00F2FE; margin: 2px 0;">0%</div>
+            <div class="meter-card" id="meter-neutral" style="padding: 6px 4px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <div class="meter-title" style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Neutral</div>
+                <div class="meter-val" id="val-neutral" style="font-size: 0.95rem; font-weight: 700; color: #00F2FE; margin: 2px 0;">0%</div>
                 <div class="meter-bar-track" style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;"><div class="meter-bar-fill" id="fill-neutral" style="height: 100%; width: 0%; background: #00F2FE; transition: width 0.4s ease;"></div></div>
             </div>
-            <div class="meter-card" id="meter-sad" style="padding: 8px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                <div class="meter-title" style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Sad</div>
-                <div class="meter-val" id="val-sad" style="font-size: 1.1rem; font-weight: 700; color: #38BDF8; margin: 2px 0;">0%</div>
+            <div class="meter-card" id="meter-sad" style="padding: 6px 4px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <div class="meter-title" style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Sad</div>
+                <div class="meter-val" id="val-sad" style="font-size: 0.95rem; font-weight: 700; color: #38BDF8; margin: 2px 0;">0%</div>
                 <div class="meter-bar-track" style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;"><div class="meter-bar-fill" id="fill-sad" style="height: 100%; width: 0%; background: #38BDF8; transition: width 0.4s ease;"></div></div>
             </div>
-            <div class="meter-card" id="meter-surprise" style="padding: 8px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                <div class="meter-title" style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Surprise</div>
-                <div class="meter-val" id="val-surprise" style="font-size: 1.1rem; font-weight: 700; color: #F59E0B; margin: 2px 0;">0%</div>
+            <div class="meter-card" id="meter-surprise" style="padding: 6px 4px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <div class="meter-title" style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Surprise</div>
+                <div class="meter-val" id="val-surprise" style="font-size: 0.95rem; font-weight: 700; color: #F59E0B; margin: 2px 0;">0%</div>
                 <div class="meter-bar-track" style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;"><div class="meter-bar-fill" id="fill-surprise" style="height: 100%; width: 0%; background: #F59E0B; transition: width 0.4s ease;"></div></div>
+            </div>
+            <div class="meter-card" id="meter-angry" style="padding: 6px 4px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <div class="meter-title" style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Angry</div>
+                <div class="meter-val" id="val-angry" style="font-size: 0.95rem; font-weight: 700; color: #EF4444; margin: 2px 0;">0%</div>
+                <div class="meter-bar-track" style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;"><div class="meter-bar-fill" id="fill-angry" style="height: 100%; width: 0%; background: #EF4444; transition: width 0.4s ease;"></div></div>
+            </div>
+            <div class="meter-card" id="meter-disgust" style="padding: 6px 4px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <div class="meter-title" style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Disgust</div>
+                <div class="meter-val" id="val-disgust" style="font-size: 0.95rem; font-weight: 700; color: #10B981; margin: 2px 0;">0%</div>
+                <div class="meter-bar-track" style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;"><div class="meter-bar-fill" id="fill-disgust" style="height: 100%; width: 0%; background: #10B981; transition: width 0.4s ease;"></div></div>
+            </div>
+            <div class="meter-card" id="meter-fear" style="padding: 6px 4px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                <div class="meter-title" style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: 600;">Fear</div>
+                <div class="meter-val" id="val-fear" style="font-size: 0.95rem; font-weight: 700; color: #A855F7; margin: 2px 0;">0%</div>
+                <div class="meter-bar-track" style="height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden;"><div class="meter-bar-fill" id="fill-fear" style="height: 100%; width: 0%; background: #A855F7; transition: width 0.4s ease;"></div></div>
             </div>
         </div>
 

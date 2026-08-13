@@ -573,8 +573,8 @@ async function startDigitalBiomarkerSession() {
     if (!modal) return;
     modal.style.display = 'flex';
 
-    // Reset all 4 emotion meter cards to 0% every time the option is opened
-    ['happy', 'neutral', 'sad', 'surprise'].forEach(emo => {
+    // Reset all 7 emotion meter cards to 0% every time the option is opened
+    ['happy', 'neutral', 'sad', 'surprise', 'angry', 'disgust', 'fear'].forEach(emo => {
         const valEl = document.getElementById(`val-${emo}`);
         const fillEl = document.getElementById(`fill-${emo}`);
         const cardEl = document.getElementById(`meter-${emo}`);
@@ -787,22 +787,22 @@ async function captureBiomarkers() {
                 
                 ctx.fillStyle = '#00F2FE';
                 ctx.font = 'bold 16px Outfit, sans-serif';
-                ctx.fillText(`${(data.detected_emotion || 'face').toUpperCase()} (${Math.round((data.confidence || 0.85) * 100)}%)`, x, y > 25 ? y - 8 : y + 20);
+                ctx.fillText(`${(data.detected_emotion || 'face').toUpperCase()} (${Math.round((data.confidence || 0) * 100)}%)`, x, y > 25 ? y - 8 : y + 20);
             }
 
             // Update Live Emotion Badge Banner
             const liveTxtEl = document.getElementById('liveEmotionText');
             if (liveTxtEl) {
-                liveTxtEl.innerText = `${(data.detected_emotion || 'neutral').toUpperCase()} (${Math.round((data.confidence || 0.85) * 100)}% CONFIDENCE)`;
+                liveTxtEl.innerText = `${(data.detected_emotion || 'neutral').toUpperCase()} (${Math.round((data.confidence || 0) * 100)}% CONFIDENCE)`;
                 if (data.detected_emotion === 'happy') liveTxtEl.style.color = '#00F5D4';
                 else if (data.detected_emotion === 'surprise') liveTxtEl.style.color = '#F59E0B';
                 else if (data.detected_emotion === 'sad') liveTxtEl.style.color = '#38BDF8';
                 else liveTxtEl.style.color = '#00F2FE';
             }
 
-            // Update Emotion Confidence Breakdown Meters
+            // Update Emotion Confidence Breakdown Meters across all 7 FER-2013 classes
             if (data.emotions_breakdown) {
-                const emotions = ['happy', 'neutral', 'sad', 'surprise'];
+                const emotions = ['happy', 'neutral', 'sad', 'surprise', 'angry', 'disgust', 'fear'];
                 emotions.forEach(emo => {
                     const val = Math.round((data.emotions_breakdown[emo] || 0) * 100);
                     const valEl = document.getElementById(`val-${emo}`);
@@ -825,7 +825,7 @@ async function captureBiomarkers() {
                 return;
             }
 
-            status.innerHTML = `<span class="text-success"><i class="ph-fill ph-check-circle"></i> Live Analysis Complete: <strong style="color: #00F2FE;">${(data.detected_emotion || 'neutral').toUpperCase()}</strong> (${Math.round((data.confidence || 0.85) * 100)}% Confidence)</span>`;
+            status.innerHTML = `<span class="text-success"><i class="ph-fill ph-check-circle"></i> Live Analysis Complete: <strong style="color: #00F2FE;">${(data.detected_emotion || 'neutral').toUpperCase()}</strong> (${Math.round((data.confidence || 0) * 100)}% Confidence)</span>`;
 
             const chatBox = document.getElementById('chatResult');
             if (chatBox) {
@@ -834,12 +834,18 @@ async function captureBiomarkers() {
                     .replace(/SOLUTIONS:\s*/gi, '<div style="margin-top: 6px; color: #00F2FE; font-weight: 700;">Recommendations:</div>')
                     .replace(/ - /g, '<br>• ');
 
+                const bm = data.biomarkers;
+                const bmLine = bm
+                    ? `<div style="margin-top: 6px; font-size: 0.78rem; color: #94A3B8;">Supplementary measurements (context only, not used for the decision): smile regions detected: ${bm.smile_region_detections}, dark mouth cavity ratio: ${bm.dark_mouth_cavity_ratio}, lower/upper luminance ratio: ${bm.lower_upper_luminance_ratio}</div>`
+                    : '';
+
                 chatBox.innerHTML += `
                 <div class="message ai-message" style="align-self: center; background: rgba(0,242,254,0.06); border: 1px solid #00F2FE; width: 100%; max-width: 100%; border-radius: 12px; padding: 14px;">
-                    <div class="msg-header" style="color: #00F2FE; font-weight: 700;"><i class="ph-fill ph-camera"></i> OPENCV + FER-2013 FACIAL EMOTION REPORT</div>
+                    <div class="msg-header" style="color: #00F2FE; font-weight: 700;"><i class="ph-fill ph-camera"></i> MINIXCEPTION CNN FACIAL EMOTION REPORT</div>
                     <div class="msg-body" style="font-size: 0.9rem; line-height: 1.5; margin-top: 6px;">
-                        <div>Primary Emotion: <strong style="color: #00F2FE; text-transform: uppercase;">${data.detected_emotion}</strong> (${Math.round((data.confidence || 0.85) * 100)}% Confidence)</div>
+                        <div>Primary Emotion: <strong style="color: #00F2FE; text-transform: uppercase;">${data.detected_emotion}</strong> (${Math.round((data.confidence || 0) * 100)}% Confidence, live CNN softmax)</div>
                         <div style="margin-top: 4px; font-size: 0.85rem; color: #E2E8F0;">${cleanReport}</div>
+                        ${bmLine}
                         </div>
                     </div>`;
                     chatBox.scrollTop = chatBox.scrollHeight;

@@ -439,16 +439,17 @@ def scan_report():
             "face_detected": False,
             "confidence": 0.0,
             "report": "No face detected in camera frame. Please align your face inside the bounding box.",
-            "emotions_breakdown": {"happy": 0.0, "neutral": 0.0, "sad": 0.0, "surprise": 0.0},
+            "emotions_breakdown": {"angry": 0.0, "disgust": 0.0, "fear": 0.0, "happy": 0.0, "sad": 0.0, "surprise": 0.0, "neutral": 0.0},
             "bounding_box": None,
             "landmarks": None,
-            "provider": "opencv-haar-landmarks"
+            "biomarkers": None,
+            "provider": face_result.get("provider", "none") if face_result else "none"
         })
 
-    # 2. Extract REAL model inference results directly
+    # 2. Extract REAL model inference results directly (CNN softmax only)
     emotion = face_result.get("emotion", "neutral")
-    confidence = face_result.get("confidence", 0.85)
-    emotions_breakdown = face_result.get("emotions_breakdown", {"happy": 0.0, "neutral": 1.0, "sad": 0.0, "surprise": 0.0})
+    confidence = face_result.get("confidence", 0.0)
+    emotions_breakdown = face_result.get("emotions_breakdown", {"angry": 0.0, "disgust": 0.0, "fear": 0.0, "happy": 0.0, "sad": 0.0, "surprise": 0.0, "neutral": 0.0})
     
     # Store Emotion Event in DB
     user_id = request.user_id
@@ -469,8 +470,10 @@ def scan_report():
         "emotions_breakdown": emotions_breakdown,
         "bounding_box": face_result.get("bounding_box"),
         "landmarks": face_result.get("landmarks"),
+        "biomarkers": face_result.get("biomarkers"),
+        "explainability_note": face_result.get("explainability_note"),
         "face_detected": True,
-        "provider": "opencv-fer2013"
+        "provider": face_result.get("provider", "unknown")
     })
 
 @api_bp.post("/voice-report")

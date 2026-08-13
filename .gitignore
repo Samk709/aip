@@ -34,3 +34,17 @@ backend-flask/test_tts.mp3
 Thumbs.db
 .vscode/
 .idea/
+.qoder/
+
+# ML model weights (too large for GitHub; regenerate/download locally)
+#   ViT FER model   -> python scripts/download_fer_model.py
+#   MiniXception CNN -> python scripts/train_fer_cnn.py
+models/
+backend-flask/models/
+
+# Datasets (download via scripts/download_fer2013_csv.py)
+data/*.csv
+data/*.zip
+
+# Personal webcam-captured face data (privacy-sensitive)
+data/webcam_labeled/
