@@ -1,9 +1,78 @@
 from importlib.util import find_spec
+from pathlib import Path
 from app.services.media_models import predict_face_emotion_cnn, EMOTION_CLASSES
 
 # Smart-crop tuning: FER models are trained on face-centric crops with a small
-# margin, not raw detection boxes. This pads the Haar box before cropping the ROI.
+# margin, not raw detection boxes. This pads the detection box before cropping the ROI.
 CROP_PAD_RATIO = 0.15
+
+# MediaPipe BlazeFace detector cache (much more robust than Haar on live webcam)
+_MP_FACE_DETECTOR = None
+_MP_FACE_DETECTOR_FAILED = False
+
+
+def _get_mediapipe_face_detector():
+    """Lazily creates the MediaPipe Tasks FaceDetector (BlazeFace short-range,
+    optimized for faces within ~2m of the camera, i.e. webcam use)."""
+    global _MP_FACE_DETECTOR, _MP_FACE_DETECTOR_FAILED
+    if _MP_FACE_DETECTOR is not None:
+        return _MP_FACE_DETECTOR
+    if _MP_FACE_DETECTOR_FAILED:
+        return None
+
+    try:
+        if find_spec("mediapipe") is None:
+            _MP_FACE_DETECTOR_FAILED = True
+            return None
+        import mediapipe as mp
+        from mediapipe.tasks import python as mp_python
+        from mediapipe.tasks.python import vision
+
+        candidates = [
+            Path(__file__).resolve().parent.parent.parent.parent / "assets" / "blaze_face_short_range.tflite",
+            Path("assets/blaze_face_short_range.tflite"),
+        ]
+        model_path = next((p for p in candidates if p.exists()), None)
+        if model_path is None:
+            _MP_FACE_DETECTOR_FAILED = True
+            return None
+
+        opts = vision.FaceDetectorOptions(
+            base_options=mp_python.BaseOptions(model_asset_path=str(model_path)),
+            min_detection_confidence=0.5,
+        )
+        _MP_FACE_DETECTOR = vision.FaceDetector.create_from_options(opts)
+        print(f"[OK] Loaded MediaPipe BlazeFace detector from {model_path}")
+        return _MP_FACE_DETECTOR
+    except Exception as e:
+        print(f"[!] MediaPipe detector unavailable ({e}); using Haar cascades")
+        _MP_FACE_DETECTOR_FAILED = True
+        return None
+
+
+def _detect_face_mediapipe(img_bgr):
+    """Returns (x, y, w, h) of the largest detected face, or None."""
+    detector = _get_mediapipe_face_detector()
+    if detector is None:
+        return None
+    try:
+        import cv2
+        import mediapipe as mp
+
+        rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+        mp_img = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
+        result = detector.detect(mp_img)
+        if not result.detections:
+            return None
+        # Largest detection wins
+        best = max(
+            result.detections,
+            key=lambda d: d.bounding_box.width * d.bounding_box.height,
+        )
+        bb = best.bounding_box
+        return (int(bb.origin_x), int(bb.origin_y), int(bb.width), int(bb.height))
+    except Exception:
+        return None
 
 
 def _crop_face_roi(gray, img_h, img_w, x, y, w, h):
@@ -106,21 +175,29 @@ def analyze_face_image(image_path: str) -> dict:
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     gray_eq = clahe.apply(gray)
 
-    # OpenCV Haar Cascades: Used STRICTLY for Face Bounding Box Detection
-    cascade_dir = cv2.data.haarcascades
-    face_cascade = cv2.CascadeClassifier(cv2.samples.findFile(cascade_dir + "haarcascade_frontalface_default.xml"))
-    face_cascade_alt = cv2.CascadeClassifier(cv2.samples.findFile(cascade_dir + "haarcascade_frontalface_alt.xml"))
-    face_cascade_alt2 = cv2.CascadeClassifier(cv2.samples.findFile(cascade_dir + "haarcascade_frontalface_alt2.xml"))
-    profile_cascade = cv2.CascadeClassifier(cv2.samples.findFile(cascade_dir + "haarcascade_profileface.xml"))
+    # PRIMARY DETECTOR: MediaPipe BlazeFace (robust on live webcam); Haar cascade
+    # chain below remains as the fallback.
+    faces = []
+    mp_box = _detect_face_mediapipe(img)
+    if mp_box is not None:
+        faces = [mp_box]
 
-    # Multi-pass face bounding box detection
-    faces = list(face_cascade.detectMultiScale(gray_eq, scaleFactor=1.05, minNeighbors=3, minSize=(30, 30)))
+    # OpenCV Haar Cascades: fallback face bounding box detection
     if len(faces) == 0:
-        faces = list(face_cascade_alt.detectMultiScale(gray_eq, scaleFactor=1.05, minNeighbors=3, minSize=(30, 30)))
-    if len(faces) == 0:
-        faces = list(face_cascade_alt2.detectMultiScale(gray_eq, scaleFactor=1.05, minNeighbors=3, minSize=(30, 30)))
-    if len(faces) == 0:
-        faces = list(profile_cascade.detectMultiScale(gray_eq, scaleFactor=1.05, minNeighbors=3, minSize=(30, 30)))
+        cascade_dir = cv2.data.haarcascades
+        face_cascade = cv2.CascadeClassifier(cv2.samples.findFile(cascade_dir + "haarcascade_frontalface_default.xml"))
+        face_cascade_alt = cv2.CascadeClassifier(cv2.samples.findFile(cascade_dir + "haarcascade_frontalface_alt.xml"))
+        face_cascade_alt2 = cv2.CascadeClassifier(cv2.samples.findFile(cascade_dir + "haarcascade_frontalface_alt2.xml"))
+        profile_cascade = cv2.CascadeClassifier(cv2.samples.findFile(cascade_dir + "haarcascade_profileface.xml"))
+
+        # Multi-pass face bounding box detection
+        faces = list(face_cascade.detectMultiScale(gray_eq, scaleFactor=1.05, minNeighbors=3, minSize=(30, 30)))
+        if len(faces) == 0:
+            faces = list(face_cascade_alt.detectMultiScale(gray_eq, scaleFactor=1.05, minNeighbors=3, minSize=(30, 30)))
+        if len(faces) == 0:
+            faces = list(face_cascade_alt2.detectMultiScale(gray_eq, scaleFactor=1.05, minNeighbors=3, minSize=(30, 30)))
+        if len(faces) == 0:
+            faces = list(profile_cascade.detectMultiScale(gray_eq, scaleFactor=1.05, minNeighbors=3, minSize=(30, 30)))
 
     # Fallback: YCrCb Skin Color Space Segmentation if Haar cascades miss fine bounding box
     if len(faces) == 0:
