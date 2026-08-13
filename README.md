@@ -47,6 +47,23 @@ python run.py
 ```
 Open: `http://localhost:5000`
 
+### Step F: One-time face-emotion model setup (required for webcam scanning)
+Model weights are NOT committed to git (too large). From the **project root** run:
+```bash
+# Primary model: pretrained ViT on real FER-2013 + AffectNet faces (~327MB download)
+python scripts/download_fer_model.py
+
+# Optional fallback model: train the small MiniXception CNN yourself
+python scripts/train_fer_cnn.py
+```
+Without this step the app still runs, but face scans report
+`"No trained model weights available"` until a model exists.
+
+Optional personalization (best accuracy on YOUR face): capture 200–500 labeled
+webcam frames with `python scripts/capture_webcam_labels.py`, then fine-tune
+with `python scripts/finetune_vit_webcam.py` — the app automatically prefers
+the fine-tuned model afterwards.
+
 ---
 
 ## 2) Optional: run with Docker Compose (backend + postgres)
